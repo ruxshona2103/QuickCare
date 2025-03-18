@@ -1,6 +1,3 @@
-#doctor, patients, appointment, notification, patientmedicine
-from math import trunc
-
 from django.db import models
 from django.contrib.auth import get_user_model
 from .hospital_staff import Department, Room
@@ -22,8 +19,6 @@ class Doctor(models.Model):
     def __str__(self):
         return f"{self.full_name} ({self.specialization}) - Room: {self.room.room_number if self.room else 'N/A'}"
 
-
-from django.db import models
 
 class Patient(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="ism sharifi")
