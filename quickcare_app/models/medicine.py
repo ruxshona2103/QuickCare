@@ -2,12 +2,22 @@
 from django.db import models
 from . import Patient
 
-
 class Medicine(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField(blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    is_available = models.BooleanField(default=True)
+    name = models.CharField(max_length=255, unique=True)  # Dori nomi
+    description = models.TextField(blank=True, null=True)  # Dori haqida qisqacha ma’lumot
+    usage = models.CharField(
+        max_length=20,
+        choices=[
+            ("painkiller", "Painkiller"),
+            ("antibiotic", "Antibiotic"),
+            ("anti-inflammatory", "Anti-inflammatory"),
+            ("other", "Other")
+        ],
+        default="other"
+    )  # Dorining turi
+    side_effects = models.TextField(blank=True, null=True)  # Yon ta’sirlari
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Narxi
+    is_available = models.BooleanField(default=True)  # Mavjud yoki yo‘qligi
 
     def __str__(self):
         return self.name
