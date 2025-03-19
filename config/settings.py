@@ -27,9 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-arbllnfy_mlk2g(qc8@*jd*1=5%q77p2!7$m7hsz)!k@61il+l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
+
+AUTH_USER_MODEL = 'user.User'  # 'your_app_name' ni haqiqiy app nomiga almashtiring
 
 
 # Application definition
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
     'djoser',
 
     'quickcare_app',
+    'user',
+
 ]
 
 MIDDLEWARE = [
@@ -137,7 +141,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT+PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
