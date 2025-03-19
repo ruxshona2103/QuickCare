@@ -1,7 +1,9 @@
-from django.utils.timezone import now
 from django.db import models
+from django.utils.timezone import now
+from .doc_patient import Doctor, Patient
+from .hospital_staff import Room
+from .misc import Notification
 
-from . import Doctor, Patient, Room, Notification
 
 class Queue(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
