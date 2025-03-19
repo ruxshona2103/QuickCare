@@ -1,5 +1,6 @@
 from django.db import models
-from . import Patient, Doctor, Notification
+from .doc_patient import Patient, Doctor
+from .misc import Notification
 
 class Emergency(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -38,7 +39,7 @@ class Ambulance(models.Model):
     status = models.CharField(
         max_length=20,
         choices=[
-            ("available", "Available"),  # Bo‘sh
+            ("available", "Available"),
             ("on_duty", "On Duty"),  # Ishlayapti
             ("unavailable", "Unavailable")  # Ishlamayapti
         ],
