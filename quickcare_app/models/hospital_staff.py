@@ -16,10 +16,10 @@ class Room(models.Model):
     department = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL, verbose_name="tegishli bo'lim")
     capacity = models.IntegerField(default=1)
 
-
     class Meta:
         verbose_name = "xona"
         verbose_name_plural = "xonalar"
+
 
     def __str__(self):
         return self.room_number

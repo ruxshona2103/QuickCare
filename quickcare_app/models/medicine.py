@@ -1,10 +1,10 @@
 #appointment, notification, patientmedicine
 from django.db import models
-from . import Patient
+from .doc_patient import Patient
 
 class Medicine(models.Model):
-    name = models.CharField(max_length=255, unique=True)  # Dori nomi
-    description = models.TextField(blank=True, null=True)  # Dori haqida qisqacha ma’lumot
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, null=True)
     usage = models.CharField(
         max_length=20,
         choices=[
@@ -14,7 +14,7 @@ class Medicine(models.Model):
             ("other", "Other")
         ],
         default="other"
-    )  # Dorining turi
+    )
     side_effects = models.TextField(blank=True, null=True)  # Yon ta’sirlari
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Narxi
     is_available = models.BooleanField(default=True)  # Mavjud yoki yo‘qligi
