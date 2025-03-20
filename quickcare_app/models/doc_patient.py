@@ -21,17 +21,12 @@ class Doctor(models.Model):
 
 
 class Patient(models.Model):
-    username = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="ism sharifi")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="foydalanuvchi")
     phone_number = models.CharField(max_length=15, unique=True, verbose_name="telefon raqami")
     birth_date = models.DateField(verbose_name="tug'ilgan sanasi")  # Tug‘ilgan sana
     address = models.TextField(blank=True, null=True, verbose_name="manzili")
     emergency_contact = models.CharField(max_length=15, blank=True, null=True, verbose_name="favqulotda qo'ng'iroq")
     medical_history = models.TextField(blank=True, null=True, verbose_name="kasallik tarixi")
-    blood_type = models.CharField(max_length=5, choices=[("A+", "A+"), ("A-", "A-"),
-                                                          ("B+", "B+"), ("B-", "B-"),
-                                                          ("AB+", "AB+"), ("AB-", "AB-"),
-                                                          ("O+", "O+"), ("O-", "O-")],
-                                  blank=True, null=True)
     allergies = models.TextField(blank=True, null=True, verbose_name="allergiya")
     chronic_diseases = models.TextField(blank=True, null=True, verbose_name="surunkali kasalliklar")
     complaints = models.TextField(blank=True, null=True, verbose_name="shikoyatlar")
