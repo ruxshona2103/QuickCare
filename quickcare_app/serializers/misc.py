@@ -48,15 +48,15 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class ReplySerializer(serializers.ModelSerializer):
-    doctor_name = serializers.CharField(source="doctor.user.username", read_only=True)
-    review_info = serializers.SerializerMethodField()
+    doctor_name = serializers.CharField(source='doctor.user.username', read_only=True)  # Shifokorning ismi
+    review_id = serializers.IntegerField(source='review.id', read_only=True)  # Sharh ID si
 
     class Meta:
         model = Reply
-        fields = ['id', 'review', 'doctor', 'doctor_name', 'response_text', 'created_at', 'review_info']
+        fields = ['id', 'review_id', 'doctor', 'doctor_name', 'response_text', 'created_at']
         read_only_fields = ['created_at']
 
-        def get_review_info(self, obj):
-            return {
-                ""
-            }
+    def validate_response_text(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Javob matni bo‘sh bo‘lishi mumkin emas.")
+        return value
