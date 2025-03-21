@@ -3,8 +3,7 @@ from quickcare_app.models import Notification, Comment, Review, Reply
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-    recipient_name = serializers.CharField(source="recipient.username", read_only=True)  # Bemor ismi
-
+    recipient_name = serializers.CharField(source="recipient.username", read_only=True)
     class Meta:
         model = Notification
         fields = ["id", "recipient", "recipient_name", "message", "sent_at", "notification_type"]
