@@ -5,7 +5,7 @@ from .hospital_staff import Department, Room
 User = get_user_model()
 
 class Doctor(models.Model):
-    username = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="shifokor")
+    username = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="shifokor", default=None)
     specialization = models.CharField(max_length=255)
     phone = models.CharField(max_length=15, unique=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
