@@ -45,3 +45,18 @@ class ReviewSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         review = Review.objects.create(**validated_data)
         return review
+
+
+class ReplySerializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(source="doctor.user.username", read_only=True)
+    review_info = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Reply
+        fields = ['id', 'review', 'doctor', 'doctor_name', 'response_text', 'created_at', 'review_info']
+        read_only_fields = ['created_at']
+
+        def get_review_info(self, obj):
+            return {
+                ""
+            }
