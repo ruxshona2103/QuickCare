@@ -1,12 +1,8 @@
-from dis import code_info
-from random import choices
-
 from rest_framework import serializers
 from quickcare_app.models import Queue, Doctor, Patient, Notification, Room
 from .doctor_patient import DoctorSerializer, PatientSerializer
 from .staff_serializer import RoomSerializer
 from django.utils.timezone import now
-
 
 class QueueSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
@@ -48,9 +44,9 @@ class QueueSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Custom validation to ensure:
-        1. Doctor is available
-        2. Patient doesn't already have an active queue
+        Validatsiya yaratildi:
+        1. Shifokor ish joyida ekanligini bilish uchun
+        2.Bemor allaqachon navbat olib qoygan yoki qo'ymaganini ko'rish uchun
         """
 
         patient = data.get('patient')
