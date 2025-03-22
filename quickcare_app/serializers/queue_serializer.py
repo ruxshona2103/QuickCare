@@ -1,3 +1,6 @@
+from dis import code_info
+from random import choices
+
 from rest_framework import serializers
 from quickcare_app.models import Queue, Doctor, Patient, Notification, Room
 from .doctor_patient import DoctorSerializer, PatientSerializer
@@ -149,6 +152,27 @@ class QueueListSerializer(serializers.ModelSerializer):
         return obj.doctor.user.username
 
 
+class QueueActionSerializer(serializers.ModelSerializer):
+    """ Cancel, Complete amallari uchun yaratilgan serializer"""
+    action = serializers.CharField(choices=['cancel', 'start','complete'])
+
+    def validate(self, data):
+        queue = self.context.get('queue')
+        action = data.get('action')
+
+        if not queue:
+            raise serializers.ValidationError("Navbat topilmadi!")
+
+        if action == 'cancel' and queue.status != 'waiting':
+            raise serializers.ValidationError("Faqat kutayotganlargina o'z navbatni bekor qilishi mumkin")
+
+        if action == 'start' and queue.status != 'waiting':
+            raise serializers.ValidationError("Faqat kutayotganlar o'z navbatini boshlashi mumkun!")
+
+        if action == "complete" and queue.status != "waiting":
+            raise serializers.ValidationError("Faqat kutayotganlar o'z navbatini tugatihsi mumkun!")
+
+        return data
 
 
 
