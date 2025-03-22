@@ -21,7 +21,9 @@ class QueueSerializer(serializers.ModelSerializer):
     room_id = serializers.PrimaryKeyRelatedField(
         queryset=Room.objects.all(),
         write_only=True,
-        source='room'
+        source='room',
+        required=False,
+        allow_null=True
     )
     status_display = serializers.CharField(source='get_status_display', read_only=True)
     waiting_time = serializers.SerializerMethodField()
@@ -54,7 +56,7 @@ class QueueSerializer(serializers.ModelSerializer):
                 patient=patient,
                 status__in=['waiting', 'in_progress']
         ).exists():
-            return serializers.ValidationError(
+            raise serializers.ValidationError(
                 {"patient": "Bu bemor allaqachon navbatda turibti."}
             )
         doctor = data.get('doctor')
@@ -94,7 +96,7 @@ class QueueSerializer(serializers.ModelSerializer):
         new_status = validated_data.get('status', old_status)
 
         if old_status != new_status:
-            if new_status == 'canceling' and old_status == 'waiting':
+            if new_status == 'cancelled' and old_status == 'waiting':
                 instance.cancel_queue()
                 return instance
 
@@ -165,8 +167,8 @@ class QueueActionSerializer(serializers.ModelSerializer):
         if action == 'start' and queue.status != 'waiting':
             raise serializers.ValidationError("Faqat kutayotganlar o'z navbatini boshlashi mumkun!")
 
-        if action == "complete" and queue.status != "waiting":
-            raise serializers.ValidationError("Faqat kutayotganlar o'z navbatini tugatihsi mumkun!")
+        if action == "complete" and queue.status != "in_progress":
+            raise serializers.ValidationError("Faqat qabuldagilar  o'z navbatini tugatishi mumkun!")
 
         return data
 
