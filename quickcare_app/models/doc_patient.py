@@ -5,7 +5,7 @@ from .hospital_staff import Department, Room
 User = get_user_model()
 
 class Doctor(models.Model):
-    username = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="shifokor", default=None)
+    full_name = models.CharField(max_length=150,verbose_name="shifokor", default=None)
     specialization = models.CharField(max_length=255)
     phone = models.CharField(max_length=15, unique=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
@@ -37,7 +37,7 @@ class Patient(models.Model):
         verbose_name_plural = "bemorlar"
 
     def __str__(self):
-        return f"Bemor {self.username}, telefon raqami {self.phone_number}"
+        return f"Bemor {self.user}, telefon raqami {self.phone_number}"
 
 
 
