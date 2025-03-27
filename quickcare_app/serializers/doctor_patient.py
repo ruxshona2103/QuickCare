@@ -1,13 +1,10 @@
 from rest_framework import serializers
 from quickcare_app.models import Doctor, Patient
-from django.utils.timezone import now
-import datetime
 import re
 from datetime import date
 
 
 class DoctorSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField()
     department_name = serializers.CharField(source="department.name", read_only=True)
     room_number = serializers.CharField(source="room.room_number", read_only=True)
 
@@ -21,6 +18,7 @@ class DoctorSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("❌ Yaroqsiz telefon raqam! Format: +998901234567")
         return value
 
+
 class PatientSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
@@ -29,11 +27,15 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = ['id', 'full_name', 'age', 'user', 'blood_type_display',
-                  'phone_number', 'birth_date', 'address', 'emergency_contact', 'medical_history', 'allergies', 'chronic_diseases', 'complaints', 'created_at']
+                  'phone_number', 'birth_date', 'address', 'emergency_contact',
+                  'medical_history', 'allergies', 'chronic_diseases', 'complaints',
+                  'created_at']
         read_only_fields = ['id', 'full_name', "age", "created_at"]
+
 
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}".strip()
+
 
     def get_age(self, obj):
         if obj.birth_date:
