@@ -20,7 +20,6 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 
 class PatientSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
     blood_type_display = serializers.CharField(source='get_blood_type_display' , read_only=True)
 
@@ -53,12 +52,12 @@ class PatientSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user = validated_data.pop['user']
+        user = validated_data.pop['full_name']
         patient = Patient.objects.create(user=user, **validated_data)
         return patient
 
     def update(self, instance, validated_data):
-        user_data = validated_data.pop("user", None)
+        user_data = validated_data.pop("full_name", None)
         if user_data:
             user = instance.user
             for attr, value in user_data.items():
