@@ -21,7 +21,7 @@ class Doctor(models.Model):
 
 
 class Patient(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="foydalanuvchi")
+    full_name = models.CharField(max_length=200, verbose_name="ism sha'rifi")
     phone_number = models.CharField(max_length=15, unique=True, verbose_name="telefon raqami")
     birth_date = models.DateField(verbose_name="tug'ilgan sanasi")  # Tug‘ilgan sana
     address = models.TextField(blank=True, null=True, verbose_name="manzili")
