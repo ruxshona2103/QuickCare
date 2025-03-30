@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from .hospital_staff import Department, Room
 
-User = get_user_model()
 
 class Doctor(models.Model):
     full_name = models.CharField(max_length=150,verbose_name="shifokor", default=None)
@@ -37,7 +35,7 @@ class Patient(models.Model):
         verbose_name_plural = "bemorlar"
 
     def __str__(self):
-        return f"Bemor {self.user}, telefon raqami {self.phone_number}"
+        return f"Bemor {self.full_name}, telefon raqami {self.phone_number}"
 
 
 
