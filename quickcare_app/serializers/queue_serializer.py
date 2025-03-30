@@ -150,9 +150,14 @@ class QueueListSerializer(serializers.ModelSerializer):
         return obj.doctor.user.username
 
 
-class QueueActionSerializer(serializers.ModelSerializer):
-    """ Cancel, Complete amallari uchun yaratilgan serializer"""
-    action = serializers.CharField(choices=['cancel', 'start','complete'])
+
+class QueueActionSerializer(serializers.Serializer):
+    ACTION_CHOICES = [
+        ('cancel', 'Cancel'),
+        ('start', 'Start'),
+        ('complete', 'Complete'),
+    ]
+    action = serializers.ChoiceField(choices=ACTION_CHOICES)
 
     def validate(self, data):
         queue = self.context.get('queue')
