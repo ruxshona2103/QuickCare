@@ -1,14 +1,14 @@
 from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from quickcare_app.models import Patient, Doctor
 from quickcare_app.serializers import DoctorSerializer, PatientSerializer
-from quickcare_app.permissions import IsAdminUserOrReadOnly, IsAdminUser, IsAuthenticated
+from quickcare_app.permissions import  IsAdminUser, IsAuthenticated
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
-    queryset = Doctor.objects.all()
+    queryset = Doctor.objects.all().order_by('created_at')
     serializer_class = DoctorSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -39,8 +39,9 @@ class DoctorViewSet(viewsets.ModelViewSet):
         return Response(result)
 
 
+
 class PatientViewSet(viewsets.ModelViewSet):
-    queryset = Patient.objects.all()
+    queryset = Patient.objects.all().order_by('created_at')
     serializer_class = PatientSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 
@@ -71,9 +72,4 @@ class PatientViewSet(viewsets.ModelViewSet):
             'medical_history': patient.medical_history
         }
         return Response(summary)
-
-
-
-
-
 
