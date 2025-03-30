@@ -31,9 +31,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'user.User'  # 'your_app_name' ni haqiqiy app nomiga almashtiring
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -50,7 +47,7 @@ INSTALLED_APPS = [
     'djoser',
 
     'quickcare_app',
-    'user',
+
 
 ]
 
