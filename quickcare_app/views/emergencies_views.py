@@ -10,7 +10,7 @@ from quickcare_app.permissions import IsAuthenticated
 
 class AmbulanceViewSet(viewsets.ModelViewSet):
     queryset = Ambulance.objects.all()
-    serializer_class = [AmbulanceSerializer]
+    serializer_class = AmbulanceSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 

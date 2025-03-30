@@ -1,12 +1,7 @@
 from django.db import models
-from .doc_patient import Patient, Doctor
-from django.contrib.auth import get_user_model
+from .doc_patient import  Doctor, Patient
 
-User = get_user_model()
-from django.db import models
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
 class Notification(models.Model):
     NOTIFICATION_TYPES = (
@@ -16,7 +11,7 @@ class Notification(models.Model):
         ("emergency_alert", "Emergency Alert"),
     )
 
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Qabul qiluvchi")
+    recipient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name="Qabul qiluvchi")
     message = models.TextField(verbose_name="Xabar matni")
     sent_at = models.DateTimeField(auto_now_add=True, verbose_name="Yuborilgan vaqt")
     is_read = models.BooleanField(default=False, verbose_name="O'qilganmi?")
@@ -26,7 +21,7 @@ class Notification(models.Model):
     via_email = models.BooleanField(default=False, verbose_name="Email orqali")
 
     def __str__(self):
-        return f"📢 {self.recipient.username} ga xabar yuborildi ({self.notification_type})"
+        return f"📢 {self.recipient.full_name} ga xabar yuborildi ({self.notification_type})"
 
     def mark_as_read(self):
         self.is_read = True
@@ -46,7 +41,7 @@ class Notification(models.Model):
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
