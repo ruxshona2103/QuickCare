@@ -9,7 +9,7 @@ from quickcare_app.permissions import  IsAdminUser, IsAuthenticated
 
 class DoctorViewSet(viewsets.ModelViewSet):
     """ Shifokorlar uchun viewset """
-    queryset = Doctor.objects.all().order_by('created_at')
+    queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
