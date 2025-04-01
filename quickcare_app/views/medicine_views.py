@@ -11,7 +11,7 @@ from quickcare_app.permissions import IsAuthenticated, IsAdminUser, IsAdminUserO
 
 
 class MedicineViewSet(viewsets.ModelViewSet):
-    queryset = Medicine.objects.all
+    queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
     permission_classes = [IsAuthenticated]
 
@@ -78,7 +78,8 @@ class PharmacyViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class PatiantMedicineViewSet(viewsets.ModelViewSet):
+
+class PatientMedicineViewSet(viewsets.ModelViewSet):
     """Bemor retseptlarini boshqarish uchun viewset"""
     queryset = PatientMedicine.objects.all()
     serializer_class = PatientMedicineSerializer
@@ -87,7 +88,7 @@ class PatiantMedicineViewSet(viewsets.ModelViewSet):
 
     filterset_fields = ['patient', 'medicine']
     search_fields = ['dosage', 'patient', 'medicine']
-    ordering_fields = ['prescribed_at']
+    ordering_fields = ['prescribed_at']  # Bu yerda prescribed_at maydoni
 
     def get_queryset(self):
         return super().get_queryset().select_related('patient', 'medicine')
@@ -99,9 +100,10 @@ class PatiantMedicineViewSet(viewsets.ModelViewSet):
             medicine = Medicine.objects.get(id=medicine_id, is_available=True)
         except Medicine.DoesNotExist:
             return Response(
-                {"error": "Dori Mavjud emas yoki tugagan!"},
+                {"error": "Dori mavjud emas yoki tugagan!"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
         """Zaxirada dori bor yoki yo'qligini tekshirish"""
         try:
             pharmacy_item = Pharmacy.objects.get(medicine=medicine)
@@ -110,7 +112,7 @@ class PatiantMedicineViewSet(viewsets.ModelViewSet):
                     {'error': 'Zaxirada bu doridan qolmagan'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            pharmacy_item -= 1
+            pharmacy_item.stock -= 1  # Bu yerda xato bor edi, stock maydonini kamaytirish kerak
             pharmacy_item.save()
         except Pharmacy.DoesNotExist:
             pass
@@ -119,7 +121,7 @@ class PatiantMedicineViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def patient_history(self, request):
-        """ Ma'lum bir bemorni kasallik tarixini bilish """
+        """Ma'lum bir bemorni kasallik tarixini bilish"""
         patient_id = request.query_params.get('patient_id')
         if not patient_id:
             return Response(
@@ -127,16 +129,14 @@ class PatiantMedicineViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         patient = get_object_or_404(Patient, id=patient_id)
-        prescription = self.get_queryset().filter(patient=patient)
-        serializer = self.get_serializer(prescription, many=True)
+        prescriptions = self.get_queryset().filter(patient=patient)
+        serializer = self.get_serializer(prescriptions, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
-    def recent_prescription(self, request):
-        """Oxirgi 30 kunlik kasallik vaqorlarini ko'rish"""
+    def recent_prescriptions(self, request):
+        """Oxirgi 30 kunlik retseptlarni ko'rish"""
         thirty_days_ago = datetime.now() - timedelta(days=30)
-        recent = self.get_queryset().filter(prescribed_at__gte=thirty_days_ago)
+        recent = self.get_queryset().filter(prescribed_at__gte=thirty_days_ago)  # Bu yerda prescribed_at maydoni
         serializer = self.get_serializer(recent, many=True)
         return Response(serializer.data)
-
-
