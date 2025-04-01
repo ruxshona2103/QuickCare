@@ -8,6 +8,7 @@ from quickcare_app.permissions import  IsAdminUser, IsAuthenticated
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
+    """ Shifokorlar uchun viewset """
     queryset = Doctor.objects.all().order_by('created_at')
     serializer_class = DoctorSerializer
 
