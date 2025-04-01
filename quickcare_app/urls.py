@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from quickcare_app.views import (DoctorViewSet, PatientViewSet,
                                  EmergencyViewSet, AmbulanceViewSet,
-                                 MedicineViewSet, PharmacyViewSet, PatiantMedicineViewSet)
+                                 MedicineViewSet, PharmacyViewSet, PatientMedicineViewSet)
 
 router = DefaultRouter()
 router.register(r'doctors', DoctorViewSet)
@@ -12,7 +12,7 @@ router.register(r'emergency', EmergencyViewSet)
 router.register(r'ambulance', AmbulanceViewSet)
 router.register(r'medicine', MedicineViewSet)
 router.register(r'pharmacy', PharmacyViewSet)
-router.register(r'patientmedicine', PatiantMedicineViewSet)
+router.register(r'patientmedicine', PatientMedicineViewSet)
 
 
 urlpatterns = [
