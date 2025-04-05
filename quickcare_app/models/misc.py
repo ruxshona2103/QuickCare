@@ -20,6 +20,10 @@ class Notification(models.Model):
     via_telegram = models.BooleanField(default=True, verbose_name="Telegram orqali")
     via_email = models.BooleanField(default=False, verbose_name="Email orqali")
 
+    class Meta:
+        verbose_name = "bildirishnoma"
+        verbose_name_plural = "bildirishnomalar"
+
     def __str__(self):
         return f"📢 {self.recipient.full_name} ga xabar yuborildi ({self.notification_type})"
 
@@ -40,11 +44,17 @@ class Notification(models.Model):
         return notification
 
 
+
+
 class Comment(models.Model):
     author = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "izoh"
+        verbose_name_plural = "izohlar"
 
     def __str__(self):
         return f"{self.author.username} -> {self.doctor.user.username}: {self.text[:30]}"
@@ -58,6 +68,10 @@ class Review(models.Model):
     comment = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "fikr"
+        verbose_name_plural = "fikrlar"
+
     def __str__(self):
         return f"Review by {self.patient.user.username} - {self.rating}⭐️"
 
@@ -65,13 +79,18 @@ class Review(models.Model):
         ordering = ["-created_at"]
 
 class Reply(models.Model):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)  # Qaysi sharhga javob yozilmoqda?
-    doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE)  # Javobni kim yozmoqda?
-    response_text = models.TextField()  # Javob matni
-    created_at = models.DateTimeField(auto_now_add=True)  # Javob qoldirilgan vaqt
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE)
+    response_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Reply by {self.doctor.user.username} to Review {self.review.id}"
+
+    class Meta:
+        verbose_name = "fikr qaytarish"
+        verbose_name_plural = "fikr qaytarishlar"
+
 
 
 
