@@ -30,6 +30,10 @@ class Pharmacy(models.Model):
     def __str__(self):
         return f"{self.medicine.name} - {self.stock} left"
 
+    class Meta:
+        verbose_name = "dori"
+        verbose_name_plural = "dorilar"
+
 
 class PatientMedicine(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -37,6 +41,15 @@ class PatientMedicine(models.Model):
     dosage = models.CharField(max_length=50)
     prescribed_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "bemor dorilari"
+        verbose_name_plural = "bemorlar dorilar"
+
     def __str__(self):
         return f"{self.patient.full_name} - {self.medicine.name} ({self.dosage})"
+
+    class Meta:
+        verbose_name = "bemor dorisi"
+        verbose_name_plural = "bemorlar dorilari"
+
 

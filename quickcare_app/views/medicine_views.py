@@ -140,3 +140,4 @@ class PatientMedicineViewSet(viewsets.ModelViewSet):
         recent = self.get_queryset().filter(prescribed_at__gte=thirty_days_ago)  # Bu yerda prescribed_at maydoni
         serializer = self.get_serializer(recent, many=True)
         return Response(serializer.data)
+
