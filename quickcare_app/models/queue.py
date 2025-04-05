@@ -25,6 +25,10 @@ class Queue(models.Model):
     def __str__(self):
         return f"{self.patient.user.username} - {self.position}"
 
+    class Meta:
+        verbose_name = "navbat"
+        verbose_name_plural = "navbatlar"
+
     @staticmethod
     def reset_daily_queue():
         """🔥 Har kuni kechasi navbatni yangilash"""
