@@ -6,8 +6,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.timezone import make_aware
 from datetime import datetime
 from rest_framework.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
-from quickcare_app.models import Emergency, Ambulance, Doctor
+from quickcare_app.models import Emergency, Ambulance
 from quickcare_app.serializers import EmergencySerializer, AmbulanceSerializer
 
 
@@ -21,10 +24,21 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
     search_fields = ['plate_number']
     ordering_fields = ['id', 'status']
 
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'location': openapi.Schema(type=openapi.TYPE_STRING, description='Manzil'),
+                'emergency_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Favqulodda holat IDsi')
+            },
+            required=['location']
+        ),
+        responses={200: AmbulanceSerializer}
+    )
     @action(detail=True, methods=['post'])
-    def send_ambulance(self, request, pk=None):  # dispatch o'rniga send_ambulance deb o'zgartirildi
+    def send_ambulance(self, request, pk=None):
         ambulance = self.get_object()
-        if ambulance.status != Ambulance.STATUS_AVAILABLE:  # STATUS_AVALIABLE -> STATUS_AVAILABLE
+        if ambulance.status != 'available':
             return Response(
                 {'detail': "Tez yordam jo'natish uchun mavjud emas!"},
                 status=status.HTTP_400_BAD_REQUEST
@@ -37,26 +51,45 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        ambulance.status = "on_duty"
+        emergency_id = request.data.get('emergency_id')
+        if emergency_id:
+            emergency = get_object_or_404(Emergency, id=emergency_id)
+            emergency.ambulance = ambulance
+            emergency.status = 'in_progress'
+            emergency.save()
+
+        ambulance.status = 'on_duty'
         ambulance.current_location = location
         ambulance.save()
 
         return Response(self.get_serializer(ambulance).data)
 
+    @swagger_auto_schema(responses={200: AmbulanceSerializer})
     @action(detail=True, methods=['post'])
-    def mark_available(self, request, pk=None):  # avaliable -> available
+    def mark_available(self, request, pk=None):
         ambulance = self.get_object()
-        ambulance.status = 'available'  # avaliable -> available
+        ambulance.status = 'available'
         ambulance.save()
         return Response(self.get_serializer(ambulance).data)
 
+    @swagger_auto_schema(responses={200: AmbulanceSerializer})
     @action(detail=True, methods=['post'])
-    def mark_unavailable(self, request, pk=None):  # unavaliable -> unavailable
+    def mark_unavailable(self, request, pk=None):
         ambulance = self.get_object()
-        ambulance.status = "unavailable"  # unavaliable -> unavailable
+        ambulance.status = "unavailable"
         ambulance.save()
         return Response(self.get_serializer(ambulance).data)
 
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'location': openapi.Schema(type=openapi.TYPE_STRING, description='Yangi manzil'),
+            },
+            required=['location']
+        ),
+        responses={200: AmbulanceSerializer}
+    )
     @action(detail=True, methods=['post'])
     def update_location(self, request, pk=None):
         ambulance = self.get_object()
@@ -84,7 +117,6 @@ class EmergencyViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # Sana filtri uchun parametrlarni olish
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
 
@@ -106,4 +138,42 @@ class EmergencyViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @swagger_auto_schema(responses={200: EmergencySerializer})
+    @action(detail=True, methods=['post'])
+    def request_ambulance(self, request, pk=None):
+        emergency = self.get_object()
 
+        if emergency.status != 'pending':
+            return Response(
+                {'detail': "Faqat 'pending' holatidagi chaqiruvlar uchun tez yordam chaqirish mumkin"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if emergency.ambulance_requested:
+            return Response(
+                {'detail': "Bu holat uchun allaqachon tez yordam chaqirilgan"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        emergency.request_ambulance()
+        return Response(self.get_serializer(emergency).data)
+
+    @swagger_auto_schema(responses={200: EmergencySerializer})
+    @action(detail=True, methods=['post'])
+    def resolve(self, request, pk=None):
+        emergency = self.get_object()
+
+        if emergency.status == 'resolved':
+            return Response(
+                {'detail': 'Bu holat allaqachon hal qilingan'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        emergency.status = 'resolved'
+        emergency.save()
+
+        if hasattr(emergency, 'ambulance') and emergency.ambulance:
+            emergency.ambulance.status = 'available'
+            emergency.ambulance.save()
+
+        return Response(self.get_serializer(emergency).data)
