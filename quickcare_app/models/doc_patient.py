@@ -6,8 +6,8 @@ class Doctor(models.Model):
     full_name = models.CharField(max_length=150,verbose_name="shifokor", default=None)
     specialization = models.CharField(max_length=255)
     phone = models.CharField(max_length=15, unique=True)
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
-    room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False, blank=False)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=False, blank=False)
     available = models.BooleanField(default=True)
 
     class Meta:
