@@ -52,6 +52,11 @@ class Emergency(models.Model):
         )
         return True
 
+    @property
+    def can_request_ambulance(self):
+        """Tez yordam chaqirish mumkinligini aniqlovchi property"""
+        return self.status == self.Status.PENDING and not self.ambulance_requested
+
     class Meta:
         verbose_name = _("Jiddiy holat")
         verbose_name_plural = _("Jiddiy holatlar")
