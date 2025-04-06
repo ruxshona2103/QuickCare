@@ -10,13 +10,25 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        fields = ['id', 'full_name', 'specialization', 'phone', 'department_name', 'room_number']
+        fields = [
+            'id',
+            'full_name',
+            'specialization',
+            'phone',
+            'department',
+            'department_name',
+            'room',
+            'room_number',
+            'available'
+        ]
 
     def validate_phone(self, value):
         pattern = re.compile(r"^\+?998\d{9}$")
         if not pattern.match(value):
             raise serializers.ValidationError("❌ Yaroqsiz telefon raqam! Format: +998901234567")
         return value
+
+
 
 
 
